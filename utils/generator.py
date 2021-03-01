@@ -312,5 +312,6 @@ if __name__ == '__main__':
     # choice_gen = factory_choice_generator(choices)()
     # for i in range(5):
     #     print(next(choice_gen))
-    print(random_num(3))
-    print(random_words())
+    # print(random_num(3))
+    # print(random_words())
+    print("generator - start")

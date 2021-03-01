@@ -3,6 +3,9 @@
 # @Author  : Vant
 # @Email   : 944921374@qq.com
 
+import os
+import sys
+sys.path.append('../')
 from selenium import webdriver
 from utils.logger import Logger
 from selenium.webdriver.chrome.options import Options
@@ -11,19 +14,22 @@ from utils.config import Config
 logger = Logger(logger="BrowserDriver").getlog()
 
 class BrowserDriver(object):
-    path = './drivers/'#这是获取相对路径的方法
+    # print("BrowserDriver - start")
+    path = "./drivers/" #这是获取相对路径的方法
     chrome_driver_path = path + 'chromedriver.exe'
     ie_driver_path = path + '/driver/IEDriverServer.exe'
 
-    def __init__(self,driver):
+    def __init__(self,driver) -> object:
         self.driver = driver
         self.c = Config()
 
     def openbrowser(self,driver):
+        # print("openbroswer - start")
         browser = self.c.get("brwserType").get("browserName")
         logger.info("选择的浏览器为: %s 浏览器" % browser)
-        url = self.c.get('ptahUrl').get('URL')
-        logger.info("打开的URL为: %s" % url)
+        # url = self.c.get('ptahUrl').get('URL')
+        url = self.c.get_case_data('login').get('url')
+        logger.info("目标URL: %s" % url)
         if browser == "Firefox":
             driver = webdriver.Firefox()
             logger.info("启动火狐浏览器")
@@ -34,12 +40,17 @@ class BrowserDriver(object):
             chrome_options.add_argument('--disable-gpu')  # 谷歌文档提到需要加上这个属性来规避bug
             chrome_options.add_argument('--hide-scrollbars')  # 隐藏滚动条, 应对一些特殊页面
             # chrome_options.add_argument('blink-settings=imagesEnabled=false')  # 不加载图片, 提升速度
-            chrome_options.add_argument('--headless')  # 浏览器不提供可视化页面. linux下如果系统不支持可视化不加这条会启动失败
+            # chrome_options.add_argument('--headless')  # 浏览器不提供可视化页面. linux下如果系统不支持可视化不加这条会启动失败
             chrome_options.add_argument('--disable-extensions')
             chrome_options.add_argument('lang=zh_CN.UTF-8')
-            driver = webdriver.Chrome(options=chrome_options)
-
-            # driver = webdriver.Chrome(self.c.driver_ptah()) #用于Windows系统加载驱动使用
+            prefs = {
+                'profile.default_content_setting_values': {
+                    'notifications': 2
+                }
+            }
+            chrome_options.add_experimental_option('prefs', prefs)  # 静默chome弹框
+            # driver = webdriver.Chrome(options=chrome_options)
+            driver = webdriver.Chrome(executable_path=self.c.driver_ptah(), options=chrome_options) #用于Windows系统加载驱动使用
 
             # driver = webdriver.Chrome() #用于linux系统加载驱动使用
             logger.info("启动谷歌浏览器")
@@ -51,8 +62,8 @@ class BrowserDriver(object):
         logger.info("打开URL: %s" % url)
         driver.maximize_window()
         logger.info("全屏当前窗口")
-        driver.implicitly_wait(5)
-        logger.info("设置5秒隐式等待时间")
+        # driver.implicitly_wait(5)
+        # logger.info("设置5秒隐式等待时间")
         return driver
 
     def quit_browser(self):

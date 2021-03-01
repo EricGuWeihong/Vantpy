@@ -45,7 +45,7 @@ class BasePage(object):
     def find_elements(self, *loc):
         try:
             # 元素可见时，返回查找到的元素；以下入参为元组的元素，需要加*
-            WebDriverWait(self.driver, 30).until(lambda driver: driver.find_elements(*loc).is_displayed())
+            WebDriverWait(self.driver, 30).until(lambda driver: driver.find_elements(*loc)[0].is_displayed())
             return self.driver.find_elements(*loc)
         except NoSuchElementException:
             logger.warning('找不到定位元素: %s' % loc[1])
@@ -72,13 +72,13 @@ class BasePage(object):
     def send_key(self, loc, text):
         logger.info('清空文本框内容: %s...' % loc[1])
         self.find_element(*loc).clear()
-        time.sleep(1)
+        # time.sleep(1)
         logger.info('输入内容方式 by %s: %s...' % (loc[0], loc[1]))
         logger.info('输入内容: %s' % text)
             #self.log.myloggger('Input: %s' % text, flag=0)
         try:
             self.find_element(*loc).send_keys(text)
-            time.sleep(2)
+            # time.sleep(2)
         except Exception as e:
             logger.error("输入内容失败 %s" % e)
             self.get_screent_img(text)
@@ -87,7 +87,7 @@ class BasePage(object):
         logger.info('点击元素 by %s: %s...' % (loc[0], loc[1]))
         try:
             self.find_element(*loc).click()
-            time.sleep(2)
+            # time.sleep(2)
         except AttributeError as e:
             logger.error("无法点击元素: %s" % e)
             raise
@@ -130,6 +130,10 @@ class BasePage(object):
         self.driver.implicitly_wait(seconds)
         logger.info("等待 %d 秒" % seconds)
 
+    def sleep(self,seconds):
+        time.sleep(seconds)
+        logger.info("强制等待 %d 秒" % seconds)
+
     def close(self):
         """
         关闭浏览器
@@ -153,6 +157,7 @@ class BasePage(object):
     def get_text(self, loc):
         '''获取文本'''
         element = self.find_element(*loc)
+        logger.info("元素文本：%s" % element.text)
         return element.text
 
     def get_attribute(self, loc, name):
@@ -256,7 +261,7 @@ class BasePage(object):
         result = WebDriverWait(self.driver, timeout, 1).until(EC.invisibility_of_element_located(loc))
         return result
 
-    def is_clickable(self, loc, timeout=10):
+    def is_clickable(self, loc, timeout=30):
         '''元素可以点击is_enabled返回本身，不可点击返回Fasle'''
         result = WebDriverWait(self.driver, timeout, 1).until(EC.element_to_be_clickable(loc))
         return result

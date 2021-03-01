@@ -1,4 +1,12 @@
-login:
-  username : admin
-  password : 111111
-
+login :
+  url : https://beigene-cn-oce--uat.lightning.force.com/
+  msl-username : xiaojie.miao@beigene.com.uat
+  msl-password : beig2021
+home :
+  menu : 主页|客户|计划|医学问题咨询|协同拜访|见解|客户计划|讲者|项目
+  component : 总部通知|近期活动|未提交的拜访|仪表板|Pilot项目状态
+acct :
+  type : HCO|HCP|所有
+  view : 00_我的目标KOL|01_所有KOL|02_国际级KOL|03_国家级KOL|04_区域级KOL|05_本地级KOL|我的HCO|我的HCP
+  tab : 详情|关联信息|互动历史|相关对象列表
+  detail : 客户名|客户类型|上级客户|医院编码|医院类别|医院等级|员工数|床位数|电话|备注
